@@ -457,19 +457,16 @@
     }
   </style>
 </head>
-
 <body>
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="./index.html" aria-label="志木のDX電話帳トップ">
         <img src="shiki-dx-phonebook-icon.jpg" alt="志木のDX電話帳アイコン">
-
         <div>
           <div class="brand-title">志木のDX電話帳</div>
           <div class="brand-subtitle">みんなで志木市を応援しよう</div>
         </div>
       </a>
-
       <nav class="top-actions" aria-label="ページ内メニュー">
         <a class="top-link" href="#my-dx">マイDX</a>
         <a class="top-link" href="#dx-list">一覧を見る</a>
@@ -480,7 +477,6 @@
   <div class="hero-wrap">
     <div class="hero">
       <img src="shiki-dx-phonebook-banner.jpg" alt="志木のDX電話帳。みんなで志木市を応援しよう。">
-
       <div class="hero-caption">
         <strong>お店も、暮らしも、地域の活動も。</strong>
         <span>志木の情報を見つけて、保存する電話帳</span>
@@ -496,17 +492,14 @@
           <p>大切な情報や新しいDXをお知らせします</p>
         </div>
       </div>
-
       <article class="notice-card" id="notice-card">
         <div class="notice-visual">
           <img id="notice-image" src="shiki-dx-article-share-template.jpg" alt="志木の地域情報を届けるイメージ">
         </div>
-
         <div class="notice-content">
           <div class="eyebrow" id="notice-type">お知らせ</div>
           <h3 id="notice-heading">志木のDX電話帳を始めます</h3>
           <p id="notice-body">志木市のお店、暮らし、地域活動など、役立つDXを見つけやすく整理していきます。</p>
-
           <div class="notice-actions" id="notice-actions">
             <button class="button button-disabled" type="button" disabled>申し込み</button>
             <button class="button button-secondary" type="button" onclick="shareArticle()">記事をシェア</button>
@@ -541,10 +534,7 @@
           <p>気になったDXを自分の電話帳に保存できます</p>
         </div>
       </div>
-
-      <div class="my-list empty" id="my-list">
-        まだ保存したDXはありません。カードの☆ボタンから保存できます。
-      </div>
+      <div class="my-list empty" id="my-list">まだ保存したDXはありません。カードの☆ボタンから保存できます。</div>
     </section>
   </main>
 
@@ -557,10 +547,7 @@
   <script>
     const DX_IMAGE = "shiki-dx-phonebook-default-card.jpg";
     const STORAGE_KEY = "shikiDxPhonebookSaved";
-
-    const GAS_URL =
-      "https://script.google.com/macros/s/AKfycbzwK-O5QGVloX0h4dqV6bmMCsDeXT116Je8PS4ZVIMRLI2XSE6bc0Fm_5XWFrJZwdXl/exec";
-
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbw4ZrGVtEbA3KUpXASfoGtiDy_V5Ut-t0LcmO8qr-BAzYLkA6LABshfpXd2XWxyV_M8/exec";
     let articleItems = [];
 
     let dxItems = [
@@ -633,55 +620,22 @@
 
     function loadGasData(){
       loadJsonp("dx", result => {
-        if(
-          result &&
-          result.ok &&
-          Array.isArray(result.data) &&
-          result.data.length
-        ){
+        if(result && result.ok && Array.isArray(result.data) && result.data.length){
           const loadedItems = result.data
             .filter(row => {
-              const status =
-                String(row["公開状態"] || "公開中").trim();
-
+              const status = String(row["公開状態"] || "公開中").trim();
               return status !== "非公開";
             })
             .map(row => ({
-              id:
-                row["DX_ID"] ||
-                `dx-${Math.random().toString(36).slice(2,8)}`,
-
-              name:
-                row["DX名"] ||
-                "名称未設定のDX",
-
-              category:
-                row["分類"] ||
-                "その他",
-
-              area:
-                row["地域"] ||
-                "志木市",
-
-              description:
-                row["短い説明"] ||
-                "",
-
-              url:
-                row["公開URL"] ||
-                "#",
-
-              image:
-                row["アイコンURL"] ||
-                DX_IMAGE,
-
-              banner:
-                row["バナーURL"] ||
-                "",
-
-              status:
-                row["公開状態"] ||
-                "公開中"
+              id: row["DX_ID"] || `dx-${Math.random().toString(36).slice(2,8)}`,
+              name: row["DX名"] || "名称未設定のDX",
+              category: row["分類"] || "その他",
+              area: row["地域"] || "志木市",
+              description: row["短い説明"] || "",
+              url: row["公開URL"] || "#",
+              image: row["アイコンURL"] || DX_IMAGE,
+              banner: row["バナーURL"] || "",
+              status: row["公開状態"] || "公開中"
             }));
 
           if(loadedItems.length){
@@ -694,31 +648,19 @@
       });
 
       loadJsonp("articles", result => {
-        if(
-          result &&
-          result.ok &&
-          Array.isArray(result.data) &&
-          result.data.length
-        ){
+        if(result && result.ok && Array.isArray(result.data) && result.data.length){
           articleItems = result.data;
           renderNotice(articleItems[0]);
         }
       });
     }
 
-    function loadJsonp(mode,onSuccess){
-      if(!GAS_URL){
-        return;
-      }
+    function loadJsonp(mode, onSuccess){
+      if(!GAS_URL) return;
 
-      const callbackName =
-        `shikiDxCallback${Date.now()}${Math.floor(Math.random() * 1000)}`;
-
-      const script =
-        document.createElement("script");
-
-      const separator =
-        GAS_URL.includes("?") ? "&" : "?";
+      const callbackName = `shikiDxCallback${Date.now()}${Math.floor(Math.random() * 1000)}`;
+      const script = document.createElement("script");
+      const separator = GAS_URL.includes("?") ? "&" : "?";
 
       window[callbackName] = result => {
         try{
@@ -734,57 +676,33 @@
         script.remove();
       };
 
-      script.src =
-        `${GAS_URL}${separator}mode=${encodeURIComponent(mode)}&callback=${callbackName}&_=${Date.now()}`;
-
+      script.src = `${GAS_URL}${separator}mode=${encodeURIComponent(mode)}&callback=${callbackName}&_=${Date.now()}`;
       document.head.appendChild(script);
     }
 
     function renderNotice(article){
-      if(!article){
-        return;
-      }
+      if(!article) return;
 
       currentArticle = article;
 
-      const type =
-        article["種別"] ||
-        "お知らせ";
-
-      const title =
-        article["テーマ"] ||
-        "志木のDX電話帳";
-
-      const body =
-        article["詳細内容"] ||
-        "";
-
-      const date =
-        article["日付"] ||
-        "";
-
-      const image =
-        article["画像1"] ||
-        "shiki-dx-article-share-template.jpg";
+      const type = article["種別"] || "お知らせ";
+      const title = article["テーマ"] || "志木のDX電話帳";
+      const body = article["詳細内容"] || "";
+      const date = article["日付"] || "";
+      const image = article["画像1"] || "shiki-dx-article-share-template.jpg";
 
       document.getElementById("notice-type").textContent =
         date ? `${type}｜${date}` : type;
 
-      document.getElementById("notice-heading").textContent =
-        title;
+      document.getElementById("notice-heading").textContent = title;
+      document.getElementById("notice-body").textContent = body;
 
-      document.getElementById("notice-body").textContent =
-        body;
-
-      const noticeImage =
-        document.getElementById("notice-image");
-
+      const noticeImage = document.getElementById("notice-image");
       noticeImage.src = image;
       noticeImage.alt = `${title}の画像`;
 
       noticeImage.onerror = () => {
-        noticeImage.src =
-          "shiki-dx-article-share-template.jpg";
+        noticeImage.src = "shiki-dx-article-share-template.jpg";
       };
 
       const actions = [];
@@ -795,7 +713,7 @@
              href="${safeUrl(article["申込URL"])}"
              target="_blank"
              rel="noopener">
-             ${escapeHtml(article["申込ボタン名"] || "申し込む")}
+            ${escapeHtml(article["申込ボタン名"] || "申し込む")}
           </a>
         `);
       }
@@ -806,7 +724,7 @@
              href="${safeUrl(article["詳細リンクURL"])}"
              target="_blank"
              rel="noopener">
-             ${escapeHtml(article["詳細ボタン名"] || "詳しく見る")}
+            ${escapeHtml(article["詳細ボタン名"] || "詳しく見る")}
           </a>
         `);
       }
@@ -817,7 +735,7 @@
              href="${safeUrl(article["YouTube URL"])}"
              target="_blank"
              rel="noopener">
-             YouTubeを見る
+            YouTubeを見る
           </a>
         `);
       }
@@ -830,55 +748,44 @@
         </button>
       `);
 
-      document.getElementById("notice-actions").innerHTML =
-        actions.join("");
+      document.getElementById("notice-actions").innerHTML = actions.join("");
     }
 
     function getSavedIds(){
       try{
-        return JSON.parse(
-          localStorage.getItem(STORAGE_KEY) || "[]"
-        );
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
       }catch(error){
         return [];
       }
     }
 
     function saveIds(ids){
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(ids)
-      );
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
     }
 
     function showToast(message){
-      const toast =
-        document.getElementById("toast");
-
+      const toast = document.getElementById("toast");
       toast.textContent = message;
       toast.classList.add("show");
 
       clearTimeout(showToast.timer);
 
-      showToast.timer =
-        setTimeout(() => {
-          toast.classList.remove("show");
-        },2200);
+      showToast.timer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2200);
     }
 
     function renderCategories(){
-      const wrap =
-        document.getElementById("categories");
+      const wrap = document.getElementById("categories");
 
-      wrap.innerHTML =
-        categories.map(category => `
-          <button
-            class="category-button ${selectedCategory === category ? "active" : ""}"
-            type="button"
-            onclick="selectCategory(${JSON.stringify(category)})">
-            ${category}
-          </button>
-        `).join("");
+      wrap.innerHTML = categories.map(category => `
+        <button
+          class="category-button ${selectedCategory === category ? "active" : ""}"
+          type="button"
+          onclick="selectCategory(${JSON.stringify(category)})">
+          ${category}
+        </button>
+      `).join("");
     }
 
     function filteredItems(){
@@ -889,7 +796,7 @@
 
         const text =
           `${item.name} ${item.category} ${item.area} ${item.description}`
-            .toLowerCase();
+          .toLowerCase();
 
         const searchMatch =
           !searchWord ||
@@ -900,141 +807,116 @@
     }
 
     function renderCards(){
-      const grid =
-        document.getElementById("dx-grid");
+      const grid = document.getElementById("dx-grid");
+      const empty = document.getElementById("empty-state");
+      const items = filteredItems();
+      const saved = getSavedIds();
 
-      const empty =
-        document.getElementById("empty-state");
+      grid.innerHTML = items.map(item => {
+        const isSaved = saved.includes(item.id);
+        const isReady =
+          item.url &&
+          item.url !== "#" &&
+          item.status !== "制作中";
 
-      const items =
-        filteredItems();
+        return `
+          <article class="dx-card">
+            <div class="dx-card-image">
+              <img
+                src="${safeUrl(item.image || DX_IMAGE)}"
+                alt="${escapeHtml(item.name)}の画像"
+                onerror="this.src='${DX_IMAGE}'">
+              <span class="category-label">
+                ${escapeHtml(item.category)}
+              </span>
+            </div>
 
-      const saved =
-        getSavedIds();
+            <div class="dx-card-body">
+              <h3>${escapeHtml(item.name)}</h3>
 
-      grid.innerHTML =
-        items.map(item => {
-          const isSaved =
-            saved.includes(item.id);
+              <p>
+                ${escapeHtml(item.area)}<br>
+                ${escapeHtml(item.description)}
+              </p>
 
-          const isReady =
-            item.url &&
-            item.url !== "#" &&
-            item.status !== "制作中";
+              <div class="dx-card-footer">
+                ${
+                  isReady
+                  ? `
+                    <a
+                      class="button button-primary"
+                      href="${safeUrl(item.url)}"
+                      target="_blank"
+                      rel="noopener">
+                      見る
+                    </a>
+                  `
+                  : `
+                    <button
+                      class="button button-disabled"
+                      type="button"
+                      disabled>
+                      準備中
+                    </button>
+                  `
+                }
 
-          return `
-            <article class="dx-card">
-              <div class="dx-card-image">
-                <img
-                  src="${safeUrl(item.image || DX_IMAGE)}"
-                  alt="${escapeHtml(item.name)}の画像"
-                  onerror="this.src='${DX_IMAGE}'">
-
-                <span class="category-label">
-                  ${escapeHtml(item.category)}
-                </span>
+                <button
+                  class="button button-secondary save-button ${isSaved ? "saved" : ""}"
+                  type="button"
+                  aria-label="${isSaved ? "マイDXから削除" : "マイDXに保存"}"
+                  onclick="toggleSave(${JSON.stringify(item.id)})">
+                  ${isSaved ? "★" : "☆"}
+                </button>
               </div>
+            </div>
+          </article>
+        `;
+      }).join("");
 
-              <div class="dx-card-body">
-                <h3>${escapeHtml(item.name)}</h3>
-
-                <p>
-                  ${escapeHtml(item.area)}<br>
-                  ${escapeHtml(item.description)}
-                </p>
-
-                <div class="dx-card-footer">
-                  ${
-                    isReady
-                      ? `
-                        <a
-                          class="button button-primary"
-                          href="${safeUrl(item.url)}"
-                          target="_blank"
-                          rel="noopener">
-                          見る
-                        </a>
-                      `
-                      : `
-                        <button
-                          class="button button-disabled"
-                          type="button"
-                          disabled>
-                          準備中
-                        </button>
-                      `
-                  }
-
-                  <button
-                    class="button button-secondary save-button ${isSaved ? "saved" : ""}"
-                    type="button"
-                    aria-label="${isSaved ? "マイDXから削除" : "マイDXに保存"}"
-                    onclick="toggleSave(${JSON.stringify(item.id)})">
-                    ${isSaved ? "★" : "☆"}
-                  </button>
-                </div>
-              </div>
-            </article>
-          `;
-        }).join("");
-
-      empty.style.display =
-        items.length ? "none" : "block";
+      empty.style.display = items.length ? "none" : "block";
 
       document.getElementById("result-count").textContent =
         `${items.length}件のDXを表示しています`;
     }
 
     function renderMyList(){
-      const wrap =
-        document.getElementById("my-list");
+      const wrap = document.getElementById("my-list");
+      const saved = getSavedIds();
 
-      const saved =
-        getSavedIds();
-
-      const items =
-        saved
-          .map(id => dxItems.find(item => item.id === id))
-          .filter(Boolean);
+      const items = saved
+        .map(id => dxItems.find(item => item.id === id))
+        .filter(Boolean);
 
       if(!items.length){
         wrap.className = "my-list empty";
-
         wrap.textContent =
           "まだ保存したDXはありません。カードの☆ボタンから保存できます。";
-
         return;
       }
 
       wrap.className = "my-list";
 
-      wrap.innerHTML =
-        items.map(item => `
-          <span class="saved-chip">
-            ${escapeHtml(item.name)}
+      wrap.innerHTML = items.map(item => `
+        <span class="saved-chip">
+          ${escapeHtml(item.name)}
 
-            <button
-              type="button"
-              aria-label="${escapeHtml(item.name)}を削除"
-              onclick="toggleSave(${JSON.stringify(item.id)})">
-              ×
-            </button>
-          </span>
-        `).join("");
+          <button
+            type="button"
+            aria-label="${escapeHtml(item.name)}を削除"
+            onclick="toggleSave(${JSON.stringify(item.id)})">
+            ×
+          </button>
+        </span>
+      `).join("");
     }
 
     function toggleSave(id){
-      const saved =
-        getSavedIds();
-
-      const index =
-        saved.indexOf(id);
-
-      const item =
-        dxItems.find(entry => entry.id === id);
+      const saved = getSavedIds();
+      const index = saved.indexOf(id);
 
       if(index >= 0){
-        saved.splice(index,1);
+        saved.splice(index, 1);
         showToast("マイDXから削除しました");
       }else{
         saved.push(id);
@@ -1053,18 +935,17 @@
     }
 
     async function shareArticle(){
-      const article =
-        currentArticle;
+      const article = currentArticle;
 
       const title =
         article && article["テーマ"]
-          ? article["テーマ"]
-          : "志木のDX電話帳";
+        ? article["テーマ"]
+        : "志木のDX電話帳";
 
       const body =
         article && article["詳細内容"]
-          ? article["詳細内容"]
-          : "みんなで志木市を応援しよう。";
+        ? article["詳細内容"]
+        : "みんなで志木市を応援しよう。";
 
       const shareData = {
         title:title,
@@ -1084,10 +965,7 @@
 
         showToast("共有文をコピーしました");
       }catch(error){
-        if(
-          error &&
-          error.name !== "AbortError"
-        ){
+        if(error && error.name !== "AbortError"){
           showToast("共有できませんでした");
         }
       }
@@ -1103,8 +981,7 @@
     }
 
     function safeUrl(value){
-      const url =
-        String(value || "").trim();
+      const url = String(value || "").trim();
 
       if(/^https?:\/\//i.test(url)){
         return escapeHtml(url);
@@ -1119,10 +996,8 @@
 
     document
       .getElementById("search-input")
-      .addEventListener("input",event => {
-        searchWord =
-          event.target.value.trim();
-
+      .addEventListener("input", event => {
+        searchWord = event.target.value.trim();
         renderCards();
       });
 
