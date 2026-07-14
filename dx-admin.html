@@ -1,694 +1,458 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>管理画面｜志木のDX電話帳</title>
-<style>
-:root{--navy:#092b63;--blue:#1677d2;--line:#d8e6f1;--text:#17324d;--muted:#65798c;--green:#159b78;--red:#bd4a50}
-*{box-sizing:border-box}
-body{margin:0;color:var(--text);background:linear-gradient(180deg,#f5fbff,#fff 55%);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Yu Gothic",sans-serif;line-height:1.6}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.top{background:var(--navy);color:#fff;padding:18px 0}
-.wrap{width:min(1080px,calc(100% - 28px));margin:auto}
-.top-in{display:flex;justify-content:space-between;align-items:center;gap:14px}
-.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
-.brand img{width:45px;height:45px;border-radius:13px;object-fit:cover;background:#fff}
-.brand strong{display:block;font-size:17px;line-height:1.2}
-.brand small{display:block;color:#cfe7ff;font-size:11px;margin-top:3px}
-.top-link{color:var(--navy);background:#fff;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:800;text-decoration:none}
-main{padding:25px 0 60px}
-.heading{margin-bottom:18px}
-.heading h1{margin:0;color:var(--navy);font-size:clamp(25px,5vw,36px)}
-.heading p{margin:7px 0 0;color:var(--muted);font-size:13px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.tab{border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--navy);padding:10px 16px;font-weight:800;font-size:13px}
-.tab.active{background:var(--navy);color:#fff}
-.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:19px;box-shadow:0 10px 28px #124d7712;margin-bottom:18px}
-.panel h2{margin:0 0 15px;color:var(--navy);font-size:20px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 15px}
-.full{grid-column:1/-1}
-.field{display:grid;gap:5px}
-.field label{color:#35536d;font-size:13px;font-weight:800}
-.field small{color:var(--muted);font-weight:400;font-size:11px}
-input,select,textarea{width:100%;border:1px solid #c8d9e7;border-radius:10px;background:#fbfdff;color:var(--text);padding:10px 11px;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1677d220}
-textarea{min-height:110px;resize:vertical;line-height:1.7}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
-.button{border:0;border-radius:10px;padding:11px 15px;font-size:13px;font-weight:800}
-.primary{background:var(--blue);color:#fff}
-.green{background:var(--green);color:#fff}
-.secondary{background:#eaf3fb;color:var(--navy);border:1px solid var(--line)}
-.button:disabled{opacity:.6;cursor:wait}
-.status{min-height:22px;margin:12px 0 0;color:var(--green);font-size:13px;font-weight:800}
-.status.error{color:var(--red)}
-.hint{margin:9px 0;color:var(--muted);font-size:11px}
-.article-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.72fr);gap:18px}
-.preview-panel{position:sticky;top:15px}
-.preview-image{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#eef8ff}
-.preview-image>img{width:100%;height:100%;object-fit:cover;display:block}
-.preview-overlay{position:absolute;left:5%;top:9%;width:52%;color:var(--navy)}
-.preview-type{color:var(--green);font-size:14px;font-weight:900}
-.preview-title{margin-top:5px;font-size:clamp(16px,3vw,29px);font-weight:900;line-height:1.3}
-.preview-date{margin-top:8px;color:#42617c;font-size:14px;font-weight:800}
-.article-card{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#f8fcff}
-.article-card .meta{color:var(--green);font-size:12px;font-weight:800}
-.article-card h3{margin:4px 0 6px;font-size:18px}
-.article-card p{margin:0;white-space:pre-wrap;color:#536a7e;font-size:13px}
-.image-row{display:grid;grid-template-columns:minmax(0,1fr) 78px;gap:8px;align-items:center;margin-top:7px}
-.image-preview{width:78px;height:52px;object-fit:cover;border:1px solid var(--line);border-radius:8px;background:#eef8ff}
-.saved-box{padding:13px;border-radius:14px;background:#eaf9f2;border:1px solid #ccebdd}
-.saved-box strong{color:#23754b;font-size:14px}
-.saved-box p{margin:3px 0;color:#47745d;font-size:11px}
-.saved-list{display:grid;gap:6px;margin-top:9px}
-.saved-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:#fff;border:1px solid #d8eee2}
-.saved-item span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:800}
-.saved-item button{border:0;background:transparent;color:var(--blue);font-size:11px;font-weight:800}
-.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;background:#17324d;color:#fff;border-radius:999px;padding:10px 16px;font-size:12px;font-weight:800;transition:.2s}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:820px){.article-layout{grid-template-columns:1fr}.preview-panel{position:static}}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.panel{padding:15px}.top-in{align-items:flex-start}.actions .button{flex:1 1 auto}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#092b63">
+  <title>管理画面｜志木のDX電話帳</title>
+  <style>
+    :root{--navy:#092b63;--blue:#1677d2;--sky:#eef8ff;--mint:#eaf9f2;--line:#d8e6f1;--text:#17324d;--muted:#65798c;--green:#159b78;--red:#bd4a50;--shadow:0 10px 28px #124d7712}
+    *{box-sizing:border-box}
+    body{margin:0;color:var(--text);background:linear-gradient(180deg,#f5fbff,#fff 55%);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Yu Gothic",sans-serif;line-height:1.6}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .top{background:var(--navy);color:#fff;padding:18px 0;box-shadow:0 5px 18px #092b6330}
+    .wrap{width:min(1080px,calc(100% - 28px));margin:auto}
+    .top-in{display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+    .brand img{width:45px;height:45px;border-radius:13px;object-fit:cover;background:#fff}
+    .brand strong{display:block;font-size:17px;line-height:1.2}.brand small{display:block;color:#cfe7ff;font-size:11px;margin-top:3px}
+    .top-link{color:var(--navy);background:#fff;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+    main{padding:25px 0 60px}.heading{margin-bottom:18px}.heading h1{margin:0;color:var(--navy);font-size:clamp(25px,5vw,36px);line-height:1.25}.heading p{margin:7px 0 0;color:var(--muted);font-size:13px}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--navy);padding:10px 16px;font-weight:800;font-size:13px}.tab.active{background:var(--navy);color:#fff}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:19px;box-shadow:var(--shadow);margin-bottom:18px}.panel h2{margin:0 0 15px;color:var(--navy);font-size:20px}.panel h3{margin:20px 0 9px;color:var(--navy);font-size:15px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 15px}.full{grid-column:1/-1}.field{display:grid;gap:5px}.field label{color:#35536d;font-size:13px;font-weight:800}.field small{color:var(--muted);font-weight:400;font-size:11px;line-height:1.5}
+    input,select,textarea{width:100%;border:1px solid #c8d9e7;border-radius:10px;background:#fbfdff;color:var(--text);padding:10px 11px;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1677d220}textarea{min-height:110px;resize:vertical;line-height:1.7}
+    .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.button{border:0;border-radius:10px;padding:11px 15px;font-size:13px;font-weight:800}.primary{background:var(--blue);color:#fff}.green{background:var(--green);color:#fff}.secondary{background:#eaf3fb;color:var(--navy);border:1px solid var(--line)}.danger{background:#fff0f0;color:var(--red);border:1px solid #f1d1d4}.button:disabled{opacity:.6;cursor:wait}
+    .status{min-height:22px;margin:12px 0 0;color:var(--green);font-size:13px;font-weight:800}.status.error{color:var(--red)}.hint{margin:9px 0 0;color:var(--muted);font-size:11px}
+    .article-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.72fr);gap:18px;align-items:start}.preview-panel{position:sticky;top:15px}.preview-image{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:var(--sky)}.preview-image>img{width:100%;height:100%;object-fit:cover;display:block}.preview-overlay{position:absolute;left:5%;top:9%;width:52%;color:var(--navy);text-shadow:0 1px 0 #fff}.preview-type{color:var(--green);font-size:clamp(10px,1.5vw,14px);font-weight:900}.preview-title{margin-top:5px;font-size:clamp(16px,3vw,29px);font-weight:900;line-height:1.3;overflow-wrap:anywhere}.preview-date{margin-top:8px;color:#42617c;font-size:clamp(10px,1.4vw,14px);font-weight:800}.article-card{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#f8fcff}.article-card .meta{color:var(--green);font-size:12px;font-weight:800}.article-card h3{margin:4px 0 6px;font-size:18px}.article-card p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;color:#536a7e;font-size:13px}
+    .image-row{display:grid;grid-template-columns:minmax(0,1fr) 78px;gap:8px;align-items:center;margin-top:7px}.image-row:first-of-type{margin-top:0}.image-preview{width:78px;height:52px;object-fit:cover;border:1px solid var(--line);border-radius:8px;background:var(--sky)}
+    .saved-box{padding:13px;border-radius:14px;background:var(--mint);border:1px solid #ccebdd}.saved-box strong{color:#23754b;font-size:14px}.saved-box p{margin:3px 0;color:#47745d;font-size:11px}.saved-list{display:grid;gap:6px;margin-top:9px}.saved-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:#fff;border:1px solid #d8eee2}.saved-item span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:800}.saved-item button{border:0;background:transparent;color:var(--blue);font-size:11px;font-weight:800;white-space:nowrap}
+    .toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#17324d;color:#fff;border-radius:999px;padding:10px 16px;font-size:12px;font-weight:800;transition:.2s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:820px){.article-layout{grid-template-columns:1fr}.preview-panel{position:static}}@media(max-width:600px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.panel{padding:15px}.top-in{align-items:flex-start}.brand strong{font-size:15px}.top-link{padding:7px 10px}.actions .button{flex:1 1 auto}}
+  </style>
 </head>
-
 <body>
-<header class="top">
-<div class="wrap top-in">
-<a class="brand" href="./index.html">
-<img src="shiki-dx-phonebook-icon.jpg" alt="志木のDX電話帳">
-<span><strong>志木のDX電話帳</strong><small>管理画面</small></span>
-</a>
-<a class="top-link" href="./index.html">公開ページを見る</a>
-</div>
-</header>
-
-<main class="wrap">
-<div class="heading">
-<h1>管理画面</h1>
-<p>DXの登録と、お知らせの掲載・更新をここから行えます。</p>
-</div>
-
-<div class="tabs">
-<button class="tab active" type="button" onclick="showPanel('dx-panel',this)">DXを登録する</button>
-<button class="tab" type="button" onclick="showPanel('article-panel',this)">お知らせを登録・更新する</button>
-</div>
-
-<section id="dx-panel">
-<div class="panel">
-<h2>DX登録</h2>
-
-<form id="dx-form">
-<div class="grid">
-
-<div class="field">
-<label for="dx-id">DX_ID <small>既存DXの更新時だけ入力</small></label>
-<input id="dx-id" type="text" placeholder="例：shiki-lunch-001">
-</div>
-
-<div class="field">
-<label for="dx-name">DX名 *</label>
-<input id="dx-name" type="text" required placeholder="例：志木のお店情報DX">
-</div>
-
-<div class="field">
-<label for="dx-category">分類 *</label>
-<select id="dx-category" required>
-<option value="">選択してください</option>
-<option>お店・飲食</option>
-<option>暮らし</option>
-<option>防災</option>
-<option>福祉</option>
-<option>子育て</option>
-<option>地域活動</option>
-<option>イベント</option>
-<option>観光</option>
-<option>まちづくり</option>
-<option>その他</option>
-</select>
-</div>
-
-<div class="field">
-<label for="dx-area">地域</label>
-<input id="dx-area" type="text" value="志木市">
-</div>
-
-<div class="field">
-<label for="dx-status">公開状態</label>
-<select id="dx-status">
-<option>公開中</option>
-<option>制作中</option>
-<option>非公開</option>
-</select>
-</div>
-
-<div class="field">
-<label for="dx-order">表示順</label>
-<input id="dx-order" type="number" min="1" value="1">
-</div>
-
-<div class="field full">
-<label for="dx-description">短い説明 *</label>
-<textarea id="dx-description" required placeholder="このDXで何ができるかを書きます。"></textarea>
-</div>
-
-<div class="field full">
-<label for="dx-url">公開URL *</label>
-<input id="dx-url" type="url" required placeholder="https://ichirohns-jpg.github.io/xxxxx/">
-</div>
-
-<div class="field">
-<label for="dx-icon">アイコンURL</label>
-<input id="dx-icon" type="text" placeholder="shiki-dx-phonebook-icon.jpg">
-</div>
-
-<div class="field">
-<label for="dx-banner">バナーURL</label>
-<input id="dx-banner" type="text" placeholder="shiki-dx-phonebook-banner.jpg">
-</div>
-
-</div>
-
-<div class="actions">
-<button class="button primary" id="dx-save" type="submit">DXをスプレッドシートへ保存</button>
-<button class="button secondary" id="dx-clear" type="button">入力をクリア</button>
-</div>
-
-<p class="status" id="dx-status-message"></p>
-</form>
-</div>
-</section>
-
-<section id="article-panel" hidden>
-<div class="article-layout">
-
-<div>
-<div class="panel">
-<h2>お知らせ登録・更新</h2>
-<p class="hint">新規登録は記事_IDを空欄、更新は保存済みの記事を選ぶか記事_IDを入力してください。</p>
-
-<form id="article-form">
-<div class="grid">
-
-<div class="field">
-<label for="article-id">記事_ID</label>
-<input id="article-id" type="text" placeholder="例：article-xxxxxxxx">
-</div>
-
-<div class="field">
-<label for="article-public">公開状態</label>
-<select id="article-public">
-<option value="公開">公開</option>
-<option value="非公開">非公開</option>
-</select>
-</div>
-
-<div class="field">
-<label for="article-type">種別</label>
-<select id="article-type">
-<option>お知らせ</option>
-<option>新着DX</option>
-<option>募集</option>
-<option>イベント</option>
-<option>特集</option>
-<option>重要</option>
-</select>
-</div>
-
-<div class="field">
-<label for="article-date">日付</label>
-<input id="article-date" type="date">
-</div>
-
-<div class="field">
-<label for="article-order">表示順</label>
-<input id="article-order" type="number" min="1" value="1">
-</div>
-
-<div class="field full">
-<label for="article-title">テーマ *</label>
-<input id="article-title" type="text" required placeholder="例：志木のDX電話帳を始めます">
-</div>
-
-<div class="field full">
-<label for="article-body">詳細内容 *</label>
-<textarea id="article-body" required placeholder="記事の本文・説明・案内を入力してください"></textarea>
-</div>
-
-<div class="field full">
-<label>画像URL <small>最大5枚</small></label>
-
-<div class="image-row">
-<input class="article-image" type="text" placeholder="画像1のURL">
-<img class="image-preview" alt="画像1">
-</div>
-
-<div class="image-row">
-<input class="article-image" type="text" placeholder="画像2のURL">
-<img class="image-preview" alt="画像2">
-</div>
-
-<div class="image-row">
-<input class="article-image" type="text" placeholder="画像3のURL">
-<img class="image-preview" alt="画像3">
-</div>
-
-<div class="image-row">
-<input class="article-image" type="text" placeholder="画像4のURL">
-<img class="image-preview" alt="画像4">
-</div>
-
-<div class="image-row">
-<input class="article-image" type="text" placeholder="画像5のURL">
-<img class="image-preview" alt="画像5">
-</div>
-</div>
-
-<div class="field">
-<label for="apply-name">申し込みボタン名</label>
-<input id="apply-name" type="text" placeholder="例：申し込む">
-</div>
-
-<div class="field">
-<label for="apply-url">申し込みURL</label>
-<input id="apply-url" type="url" placeholder="https://">
-</div>
-
-<div class="field">
-<label for="detail-name">詳細ボタン名</label>
-<input id="detail-name" type="text" placeholder="例：詳しく見る">
-</div>
-
-<div class="field">
-<label for="detail-url">詳細リンクURL</label>
-<input id="detail-url" type="url" placeholder="https://">
-</div>
-
-<div class="field full">
-<label for="youtube-url">YouTube URL</label>
-<input id="youtube-url" type="url" placeholder="https://www.youtube.com/watch?v=">
-</div>
-
-<div class="field">
-<label for="related-dx-id">関連DX_ID</label>
-<input id="related-dx-id" type="text" placeholder="例：shiki-go-map">
-</div>
-
-<div class="field">
-<label for="start-date">掲載開始日</label>
-<input id="start-date" type="date">
-</div>
-
-<div class="field">
-<label for="end-date">掲載終了日</label>
-<input id="end-date" type="date">
-</div>
-
-</div>
-
-<div class="actions">
-<button class="button primary" id="article-save" type="submit">お知らせをシートへ保存</button>
-<button class="button green" id="share-download" type="button">シェア画像を保存</button>
-<button class="button secondary" id="article-clear" type="button">入力をクリア</button>
-</div>
-
-<p class="status" id="article-status-message"></p>
-</form>
-</div>
-
-<div class="panel saved-box">
-<strong>スプレッドシートから読み込んだ公開中のお知らせ</strong>
-<p>選択すると、内容をフォームへ読み込んで更新できます。</p>
-<div class="saved-list" id="article-list">
-<div class="saved-item"><span>読み込み中…</span></div>
-</div>
-</div>
-</div>
-
-<aside class="panel preview-panel">
-<h2>シェア画像プレビュー</h2>
-
-<div class="preview-image">
-<img src="shiki-dx-article-share-template.jpg" alt="お知らせシェア画像">
-<div class="preview-overlay">
-<div class="preview-type" id="preview-type">お知らせ</div>
-<div class="preview-title" id="preview-title">志木のDX電話帳</div>
-<div class="preview-date" id="preview-date"></div>
-</div>
-</div>
-
-<div class="article-card">
-<div class="meta" id="preview-meta">お知らせ</div>
-<h3 id="preview-heading">志木のDX電話帳</h3>
-<p id="preview-body">ここに詳細内容が表示されます。</p>
-</div>
-</aside>
-
-</div>
-</section>
-</main>
-
-<iframe name="gas-post-frame" style="display:none"></iframe>
-<div class="toast" id="toast"></div>
-
-<script>
-const GAS_URL="https://script.google.com/macros/s/AKfycbzwK-O5QGVloX0h4dqV6bmMCsDeXT116Je8PS4ZVIMRLI2XSE6bc0Fm_5XWFrJZwdXl/exec";
-const ADMIN_KEY="shiki-dx-admin-2026";
-const ARTICLE_DRAFT_KEY="shikiDxArticleDraft";
-const $=id=>document.getElementById(id);
-
-function showPanel(id,button){
-$("dx-panel").hidden=id!=="dx-panel";
-$("article-panel").hidden=id!=="article-panel";
-document.querySelectorAll(".tab").forEach(item=>item.classList.remove("active"));
-button.classList.add("active");
-if(id==="article-panel")loadArticles();
-}
-
-function today(){
-const now=new Date();
-return new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);
-}
-
-function setStatus(id,message,error=false){
-$(id).textContent=message;
-$(id).className=error?"status error":"status";
-}
-
-function postToGas(payload,done){
-const form=document.createElement("form");
-form.method="POST";
-form.action=GAS_URL;
-form.target="gas-post-frame";
-form.style.display="none";
-
-const input=document.createElement("input");
-input.type="hidden";
-input.name="payload";
-input.value=JSON.stringify(payload);
-
-form.appendChild(input);
-document.body.appendChild(form);
-form.submit();
-
-setTimeout(()=>{
-form.remove();
-done();
-},1300);
-}
-
-function readDx(){
-return{
-id:$("#dx-id").value.trim(),
-name:$("#dx-name").value.trim(),
-category:$("#dx-category").value,
-area:$("#dx-area").value.trim()||"志木市",
-description:$("#dx-description").value.trim(),
-url:$("#dx-url").value.trim(),
-iconUrl:$("#dx-icon").value.trim(),
-bannerUrl:$("#dx-banner").value.trim(),
-status:$("#dx-status").value,
-order:$("#dx-order").value||"1"
-};
-}
-
-$("#dx-form").addEventListener("submit",event=>{
-event.preventDefault();
-
-const data=readDx();
-
-if(!data.name||!data.category||!data.description||!data.url){
-setStatus("dx-status-message","DX名・分類・説明・公開URLを入力してください。",true);
-return;
-}
-
-$("#dx-save").disabled=true;
-setStatus("dx-status-message","スプレッドシートへ保存しています…");
-
-postToGas(
-{action:"saveDx",key:ADMIN_KEY,...data},
-()=>{
-$("#dx-save").disabled=false;
-setStatus("dx-status-message","DXをスプレッドシートへ保存しました。");
-}
-);
-});
-
-$("#dx-clear").addEventListener("click",()=>{
-$("#dx-form").reset();
-$("#dx-area").value="志木市";
-$("#dx-order").value="1";
-setStatus("dx-status-message","入力をクリアしました。");
-});
-
-function readArticle(){
-return{
-id:$("#article-id").value.trim(),
-isPublic:$("#article-public").value,
-type:$("#article-type").value,
-date:$("#article-date").value,
-title:$("#article-title").value.trim(),
-body:$("#article-body").value.trim(),
-images:[...document.querySelectorAll(".article-image")].map(input=>input.value.trim()),
-applyName:$("#apply-name").value.trim(),
-applyUrl:$("#apply-url").value.trim(),
-detailName:$("#detail-name").value.trim(),
-detailUrl:$("#detail-url").value.trim(),
-youtubeUrl:$("#youtube-url").value.trim(),
-relatedDxId:$("#related-dx-id").value.trim(),
-startDate:$("#start-date").value,
-endDate:$("#end-date").value,
-order:$("#article-order").value||"1"
-};
-}
-
-function fillArticle(data){
-const map={
-id:"article-id",
-isPublic:"article-public",
-type:"article-type",
-date:"article-date",
-title:"article-title",
-body:"article-body",
-applyName:"apply-name",
-applyUrl:"apply-url",
-detailName:"detail-name",
-detailUrl:"detail-url",
-youtubeUrl:"youtube-url",
-relatedDxId:"related-dx-id",
-startDate:"start-date",
-endDate:"end-date",
-order:"article-order"
-};
-
-Object.keys(map).forEach(key=>{
-if(data[key]!==undefined)$(map[key]).value=data[key]||"";
-});
-
-document.querySelectorAll(".article-image").forEach((input,index)=>{
-input.value=(data.images||[])[index]||"";
-});
-
-updateArticlePreview();
-updateImagePreviews();
-localStorage.setItem(ARTICLE_DRAFT_KEY,JSON.stringify(readArticle()));
-}
-
-$("#article-form").addEventListener("submit",event=>{
-event.preventDefault();
-
-const data=readArticle();
-
-if(!data.title||!data.body){
-setStatus("article-status-message","テーマと詳細内容を入力してください。",true);
-return;
-}
-
-$("#article-save").disabled=true;
-localStorage.setItem(ARTICLE_DRAFT_KEY,JSON.stringify(data));
-setStatus("article-status-message","お知らせシートへ保存しています…");
-
-postToGas(
-{action:"saveArticle",key:ADMIN_KEY,...data},
-()=>{
-$("#article-save").disabled=false;
-setStatus("article-status-message","お知らせをスプレッドシートへ保存しました。");
-loadArticles();
-}
-);
-});
-
-$("#article-clear").addEventListener("click",()=>{
-$("#article-form").reset();
-$("#article-id").value="";
-$("#article-date").value=today();
-$("#start-date").value=today();
-$("#article-order").value="1";
-updateImagePreviews();
-updateArticlePreview();
-localStorage.removeItem(ARTICLE_DRAFT_KEY);
-setStatus("article-status-message","入力をクリアしました。");
-});
-
-function loadArticles(){
-const callback="shikiAdminArticles"+Date.now();
-const script=document.createElement("script");
-const separator=GAS_URL.includes("?")?"&":"?";
-
-window[callback]=result=>{
-delete window[callback];
-script.remove();
-
-if(result&&result.ok&&Array.isArray(result.data)){
-renderArticles(result.data);
-}else{
-$("#article-list").innerHTML="<div class='saved-item'><span>お知らせを読み込めませんでした。</span></div>";
-}
-};
-
-script.onerror=()=>{
-delete window[callback];
-script.remove();
-$("#article-list").innerHTML="<div class='saved-item'><span>GASに接続できませんでした。</span></div>";
-};
-
-script.src=GAS_URL+separator+"mode=articles&callback="+callback+"&_="+Date.now();
-document.body.appendChild(script);
-}
-
-function renderArticles(items){
-const wrap=$("#article-list");
-
-if(!items.length){
-wrap.innerHTML="<div class='saved-item'><span>公開中のお知らせはありません。</span></div>";
-return;
-}
-
-window.shikiArticles=items;
-
-wrap.innerHTML=items.map((item,index)=>
-"<div class='saved-item'><span>"+
-escapeHtml(item["テーマ"]||"無題")+
-"｜"+
-escapeHtml(item["日付"]||"")+
-"</span><button type='button' onclick='editArticle("+
-index+
-")'>編集</button></div>"
-).join("");
-}
-
-function editArticle(index){
-fillArticle(window.shikiArticles[index]);
-setStatus("article-status-message","記事を読み込みました。内容を直して保存してください。");
-window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function updateArticlePreview(){
-const data=readArticle();
-const date=data.date?formatDate(data.date):formatDate(today());
-
-$("#preview-type").textContent=data.type||"お知らせ";
-$("#preview-title").textContent=data.title||"志木のDX電話帳";
-$("#preview-date").textContent=date;
-$("#preview-meta").textContent=(data.type||"お知らせ")+"｜"+date;
-$("#preview-heading").textContent=data.title||"志木のDX電話帳";
-$("#preview-body").textContent=data.body||"ここに詳細内容が表示されます。";
-}
-
-function formatDate(value){
-const p=String(value||"").split("-");
-return p.length===3?Number(p[0])+"年"+Number(p[1])+"月"+Number(p[2])+"日":value||"";
-}
-
-function updateImagePreviews(){
-document.querySelectorAll(".article-image").forEach(input=>{
-const image=input.parentElement.querySelector(".image-preview");
-image.src=input.value.trim()||"shiki-dx-phonebook-default-card.jpg";
-image.onerror=()=>{
-image.src="shiki-dx-phonebook-default-card.jpg";
-};
-});
-}
-
-function escapeHtml(value){
-return String(value||"")
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
-}
-
-function downloadShareImage(){
-const source=new Image();
-
-source.onload=()=>{
-const canvas=document.createElement("canvas");
-canvas.width=1200;
-canvas.height=675;
-
-const ctx=canvas.getContext("2d");
-ctx.drawImage(source,0,0,1200,675);
-
-const data=readArticle();
-
-ctx.fillStyle="rgba(255,255,255,.82)";
-ctx.fillRect(38,46,600,355);
-
-ctx.fillStyle="#159b78";
-ctx.font="900 28px sans-serif";
-ctx.fillText(data.type||"お知らせ",62,110);
-
-ctx.fillStyle="#092b63";
-ctx.font="900 58px sans-serif";
-ctx.fillText((data.title||"志木のDX電話帳").slice(0,18),62,190);
-
-ctx.fillStyle="#42617c";
-ctx.font="800 26px sans-serif";
-ctx.fillText(formatDate(data.date)||formatDate(today()),62,340);
-
-const link=document.createElement("a");
-link.download="shiki-dx-article-share.png";
-link.href=canvas.toDataURL("image/png");
-link.click();
-};
-
-source.onerror=()=>{
-showToast("シェア画像を作成できませんでした。");
-};
-
-source.src="shiki-dx-article-share-template.jpg";
-}
-
-function showToast(message){
-const toast=$("#toast");
-toast.textContent=message;
-toast.classList.add("show");
-clearTimeout(showToast.timer);
-showToast.timer=setTimeout(()=>toast.classList.remove("show"),2200);
-}
-
-document.querySelectorAll("#article-form input,#article-form select,#article-form textarea")
-.forEach(input=>{
-input.addEventListener("input",()=>{
-updateArticlePreview();
-updateImagePreviews();
-localStorage.setItem(ARTICLE_DRAFT_KEY,JSON.stringify(readArticle()));
-});
-});
-
-$("#share-download").addEventListener("click",downloadShareImage);
-
-$("#article-date").value=today();
-$("#start-date").value=today();
-
-updateArticlePreview();
-updateImagePreviews();
-
-try{
-const draft=JSON.parse(localStorage.getItem(ARTICLE_DRAFT_KEY)||"null");
-if(draft)fillArticle(draft);
-}catch(error){}
-</script>
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="brand" href="./index.html"><img src="shiki-dx-phonebook-icon.jpg" alt="志木のDX電話帳"><span><strong>志木のDX電話帳</strong><small>管理画面</small></span></a>
+      <a class="top-link" href="./index.html">公開ページを見る</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="heading"><h1>管理画面</h1><p>DXの登録と、お知らせの掲載・更新をここから行えます。</p></div>
+    <div class="tabs"><button class="tab active" type="button" onclick="showPanel('dx-panel',this)">DXを登録する</button><button class="tab" type="button" onclick="showPanel('article-panel',this)">お知らせを登録・更新する</button></div>
+
+    <section id="dx-panel">
+      <div class="panel">
+        <h2>DX登録</h2>
+        <form id="dx-form">
+          <div class="grid">
+            <div class="field"><label for="dx-id">DX_ID <small>既存DXの更新時だけ入力</small></label><input id="dx-id" type="text" placeholder="例：shiki-lunch-001"></div>
+            <div class="field"><label for="dx-name">DX名 *</label><input id="dx-name" type="text" required placeholder="例：志木のお店情報DX"></div>
+            <div class="field"><label for="dx-category">分類 *</label><select id="dx-category" required><option value="">選択してください</option><option>お店・飲食</option><option>暮らし</option><option>防災</option><option>福祉</option><option>子育て</option><option>地域活動</option><option>イベント</option><option>観光</option><option>まちづくり</option><option>その他</option></select></div>
+            <div class="field"><label for="dx-area">地域</label><input id="dx-area" type="text" value="志木市"></div>
+            <div class="field"><label for="dx-status">公開状態</label><select id="dx-status"><option>公開中</option><option>制作中</option><option>非公開</option></select></div>
+            <div class="field"><label for="dx-order">表示順</label><input id="dx-order" type="number" min="1" value="1"></div>
+            <div class="field full"><label for="dx-description">短い説明 *</label><textarea id="dx-description" required placeholder="このDXで何ができるかを書きます。"></textarea></div>
+            <div class="field full"><label for="dx-url">公開URL *</label><input id="dx-url" type="url" required placeholder="https://ichirohns-jpg.github.io/xxxxx/"></div>
+            <div class="field"><label for="dx-icon">アイコンURL <small>空欄なら共通画像</small></label><input id="dx-icon" type="text" placeholder="shiki-dx-phonebook-icon.jpg"></div>
+            <div class="field"><label for="dx-banner">バナーURL</label><input id="dx-banner" type="text" placeholder="shiki-dx-phonebook-banner.jpg"></div>
+          </div>
+          <div class="actions"><button class="button primary" id="dx-save" type="submit">DXをスプレッドシートへ保存</button><button class="button secondary" id="dx-clear" type="button">入力をクリア</button></div>
+          <p class="status" id="dx-status-message"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="article-panel" hidden>
+      <div class="article-layout">
+        <div>
+          <div class="panel">
+            <h2>お知らせ登録・更新</h2>
+            <p class="hint">新規登録は記事_IDを空欄、更新は保存済みの記事を選ぶか記事_IDを入力してください。</p>
+            <form id="article-form">
+              <div class="grid">
+                <div class="field"><label for="article-id">記事_ID <small>更新時に使用</small></label><input id="article-id" type="text" placeholder="例：article-xxxxxxxx"></div>
+                <div class="field"><label for="article-public">公開状態</label><select id="article-public"><option value="公開">公開</option><option value="非公開">非公開</option></select></div>
+                <div class="field"><label for="article-type">種別</label><select id="article-type"><option>お知らせ</option><option>新着DX</option><option>募集</option><option>イベント</option><option>特集</option><option>重要</option></select></div>
+                <div class="field"><label for="article-date">日付</label><input id="article-date" type="date"></div>
+                <div class="field"><label for="article-order">表示順</label><input id="article-order" type="number" min="1" value="1"></div>
+                <div class="field full"><label for="article-title">テーマ *</label><input id="article-title" type="text" required placeholder="例：志木のDX電話帳を始めます"></div>
+                <div class="field full"><label for="article-body">詳細内容 *</label><textarea id="article-body" required placeholder="記事の本文・説明・案内を入力してください"></textarea></div>
+                <div class="field full"><label>画像URL <small>最大5枚。GitHub画像はファイル名でも可</small></label><div class="image-row"><input class="article-image" type="text" placeholder="画像1のURL"><img class="image-preview" alt="画像1"></div><div class="image-row"><input class="article-image" type="text" placeholder="画像2のURL"><img class="image-preview" alt="画像2"></div><div class="image-row"><input class="article-image" type="text" placeholder="画像3のURL"><img class="image-preview" alt="画像3"></div><div class="image-row"><input class="article-image" type="text" placeholder="画像4のURL"><img class="image-preview" alt="画像4"></div><div class="image-row"><input class="article-image" type="text" placeholder="画像5のURL"><img class="image-preview" alt="画像5"></div></div>
+                <div class="field"><label for="apply-name">申し込みボタン名</label><input id="apply-name" type="text" placeholder="例：申し込む"></div>
+                <div class="field"><label for="apply-url">申し込みURL</label><input id="apply-url" type="url" placeholder="https://"></div>
+                <div class="field"><label for="detail-name">詳細ボタン名</label><input id="detail-name" type="text" placeholder="例：詳しく見る"></div>
+                <div class="field"><label for="detail-url">詳細リンクURL</label><input id="detail-url" type="url" placeholder="https://"></div>
+                <div class="field full"><label for="youtube-url">YouTube URL</label><input id="youtube-url" type="url" placeholder="https://www.youtube.com/watch?v="></div>
+                <div class="field"><label for="related-dx-id">関連DX_ID <small>任意</small></label><input id="related-dx-id" type="text" placeholder="例：shiki-go-map"></div>
+                <div class="field"><label for="start-date">掲載開始日 <small>任意</small></label><input id="start-date" type="date"></div>
+                <div class="field"><label for="end-date">掲載終了日 <small>任意</small></label><input id="end-date" type="date"></div>
+              </div>
+              <div class="actions"><button class="button primary" id="article-save" type="submit">お知らせをシートへ保存</button><button class="button green" id="share-download" type="button">シェア画像を保存</button><button class="button secondary" id="article-clear" type="button">入力をクリア</button></div>
+              <p class="status" id="article-status-message"></p>
+            </form>
+          </div>
+
+          <div class="panel saved-box"><strong>スプレッドシートから読み込んだ公開中のお知らせ</strong><p>選択すると、内容をフォームへ読み込んで更新できます。</p><div class="saved-list" id="article-list"><div class="saved-item"><span>読み込み中…</span></div></div></div>
+        </div>
+
+        <aside class="panel preview-panel">
+          <h2>シェア画像プレビュー</h2>
+          <div class="preview-image"><img src="shiki-dx-article-share-template.jpg" alt="お知らせシェア画像"><div class="preview-overlay"><div class="preview-type" id="preview-type">お知らせ</div><div class="preview-title" id="preview-title">志木のDX電話帳</div><div class="preview-date" id="preview-date"></div></div></div>
+          <div class="article-card"><div class="meta" id="preview-meta">お知らせ</div><h3 id="preview-heading">志木のDX電話帳</h3><p id="preview-body">ここに詳細内容が表示されます。</p></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <iframe name="gas-post-frame" style="display:none" title="保存結果"></iframe>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const GAS_URL="https://script.google.com/macros/s/AKfycbw4ZrGVtEbA3KUpXASfoGtiDy_V5Ut-t0LcmO8qr-BAzYLkA6LABshfpXd2XWxyV_M8/exec";
+    const ADMIN_KEY="shiki-dx-admin-2026";
+    const ARTICLE_DRAFT_KEY="shikiDxArticleDraft";
+    const $=id=>document.getElementById(id);
+
+    function showPanel(id,button){
+      $("dx-panel").hidden=id!=="dx-panel";
+      $("article-panel").hidden=id!=="article-panel";
+      document.querySelectorAll(".tab").forEach(item=>item.classList.remove("active"));
+      button.classList.add("active");
+      if(id==="article-panel") loadArticles();
+    }
+
+    function today(){
+      const now=new Date();
+      return new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);
+    }
+
+    function setStatus(id,message,error=false){
+      $(id).textContent=message;
+      $(id).className=error?"status error":"status";
+    }
+
+    function postToGas(payload,done){
+      const form=document.createElement("form");
+      form.method="POST";
+      form.action=GAS_URL;
+      form.target="gas-post-frame";
+      form.style.display="none";
+
+      const input=document.createElement("input");
+      input.type="hidden";
+      input.name="payload";
+      input.value=JSON.stringify(payload);
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(()=>{
+        form.remove();
+        done();
+      },1300);
+    }
+
+    function readDx(){
+      return {
+        id:$("dx-id").value.trim(),
+        name:$("dx-name").value.trim(),
+        category:$("dx-category").value,
+        area:$("dx-area").value.trim()||"志木市",
+        description:$("dx-description").value.trim(),
+        url:$("dx-url").value.trim(),
+        iconUrl:$("dx-icon").value.trim(),
+        bannerUrl:$("dx-banner").value.trim(),
+        status:$("dx-status").value,
+        order:$("dx-order").value||"1"
+      };
+    }
+
+    $("dx-form").addEventListener("submit",event=>{
+      event.preventDefault();
+
+      const data=readDx();
+
+      if(!data.name||!data.category||!data.description||!data.url){
+        setStatus("dx-status-message","DX名・分類・説明・公開URLを入力してください。",true);
+        return;
+      }
+
+      $("dx-save").disabled=true;
+      setStatus("dx-status-message","スプレッドシートへ保存しています…");
+
+      postToGas(
+        {action:"saveDx",key:ADMIN_KEY,...data},
+        ()=>{
+          $("dx-save").disabled=false;
+          setStatus("dx-status-message","DXをスプレッドシートへ保存しました。トップページを再読み込みすると反映されます。");
+        }
+      );
+    });
+
+    $("dx-clear").addEventListener("click",()=>{
+      $("dx-form").reset();
+      $("dx-area").value="志木市";
+      $("dx-order").value="1";
+      setStatus("dx-status-message","入力をクリアしました。");
+    });
+
+    function readArticle(){
+      return {
+        id:$("article-id").value.trim(),
+        isPublic:$("article-public").value,
+        type:$("article-type").value,
+        date:$("article-date").value,
+        title:$("article-title").value.trim(),
+        body:$("article-body").value.trim(),
+        images:[...document.querySelectorAll(".article-image")].map(input=>input.value.trim()),
+        applyName:$("apply-name").value.trim(),
+        applyUrl:$("apply-url").value.trim(),
+        detailName:$("detail-name").value.trim(),
+        detailUrl:$("detail-url").value.trim(),
+        youtubeUrl:$("youtube-url").value.trim(),
+        relatedDxId:$("related-dx-id").value.trim(),
+        startDate:$("start-date").value,
+        endDate:$("end-date").value,
+        order:$("article-order").value||"1"
+      };
+    }
+
+    function fillArticle(data){
+      const map={
+        id:"article-id",
+        isPublic:"article-public",
+        type:"article-type",
+        date:"article-date",
+        title:"article-title",
+        body:"article-body",
+        applyName:"apply-name",
+        applyUrl:"apply-url",
+        detailName:"detail-name",
+        detailUrl:"detail-url",
+        youtubeUrl:"youtube-url",
+        relatedDxId:"related-dx-id",
+        startDate:"start-date",
+        endDate:"end-date",
+        order:"article-order"
+      };
+
+      Object.keys(map).forEach(key=>{
+        if(data[key]!==undefined){
+          $(map[key]).value=data[key]||"";
+        }
+      });
+
+      document.querySelectorAll(".article-image").forEach((input,index)=>{
+        input.value=(data.images||[])[index]||"";
+      });
+
+      updateArticlePreview();
+      updateImagePreviews();
+      localStorage.setItem(ARTICLE_DRAFT_KEY,JSON.stringify(readArticle()));
+    }
+
+    $("article-form").addEventListener("submit",event=>{
+      event.preventDefault();
+
+      const data=readArticle();
+
+      if(!data.title||!data.body){
+        setStatus("article-status-message","テーマと詳細内容を入力してください。",true);
+        return;
+      }
+
+      $("article-save").disabled=true;
+      localStorage.setItem(ARTICLE_DRAFT_KEY,JSON.stringify(data));
+      setStatus("article-status-message","お知らせシートへ保存しています…");
+
+      postToGas(
+        {action:"saveArticle",key:ADMIN_KEY,...data},
+        ()=>{
+          $("article-save").disabled=false;
+          setStatus("article-status-message","お知らせをスプレッドシートへ保存しました。トップページに反映されます。");
+          loadArticles();
+        }
+      );
+    });
+
+    $("article-clear").addEventListener("click",()=>{
+      $("article-form").reset();
+      $("article-id").value="";
+      $("article-date").value=today();
+      $("start-date").value=today();
+      $("article-order").value="1";
+      updateImagePreviews();
+      updateArticlePreview();
+      localStorage.removeItem(ARTICLE_DRAFT_KEY);
+      setStatus("article-status-message","入力をクリアしました。");
+    });
+
+    function loadArticles(){
+      const callback="shikiAdminArticles"+Date.now();
+      const script=document.createElement("script");
+      const separator=GAS_URL.includes("?")?"&":"?";
+
+      window[callback]=result=>{
+        delete window[callback];
+        script.remove();
+
+        if(result&&result.ok&&Array.isArray(result.data)){
+          renderArticles(result.data);
+        }else{
+          $("article-list").innerHTML="<div class='saved-item'><span>お知らせを読み込めませんでした。</span></div>";
+        }
+      };
+
+      script.onerror=()=>{
+        delete window[callback];
+        script.remove();
+        $("article-list").innerHTML="<div class='saved-item'><span>GASに接続できませんでした。</span></div>";
+      };
+
+      script.src=GAS_URL+separator+"mode=articles&callback="+callback+"&_="+Date.now();
+      document.body.appendChild(script);
+    }
+
+    function renderArticles(items){
+      const wrap=$("article-list");
+
+      if(!items.length){
+        wrap.innerHTML="<div class='saved-item'><span>公開中のお知らせはありません。</span></div>";
+        return;
+      }
+
+      window.shikiArticles=items;
+
+      wrap.innerHTML=items.map((item,index)=>
+        "<div class='saved-item'><span>"+
+        escapeHtml(item["テーマ"]||"無題")+
+        "｜"+
+        escapeHtml(item["日付"]||"")+
+        "</span><button type='button' onclick='editArticle("+index+")'>編集</button></div>"
+      ).join("");
+    }
+
+    function editArticle(index){
+      fillArticle(window.shikiArticles[index]);
+      setStatus("article-status-message","記事を読み込みました。内容を直して保存してください。");
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function updateArticlePreview(){
+      const data=readArticle();
+      const date=data.date?formatDate(data.date):formatDate(today());
+
+      $("preview-type").textContent=data.type||"お知らせ";
+      $("preview-title").textContent=data.title||"志木のDX電話帳";
+      $("preview-date").textContent=date;
+      $("preview-meta").textContent=(data.type||"お知らせ")+"｜"+date;
+      $("preview-heading").textContent=data.title||"志木のDX電話帳";
+      $("preview-body").textContent=data.body||"ここに詳細内容が表示されます。";
+    }
+
+    function formatDate(value){
+      const p=String(value||"").split("-");
+      return p.length===3
+        ? Number(p[0])+"年"+Number(p[1])+"月"+Number(p[2])+"日"
+        : value||"";
+    }
+
+    function updateImagePreviews(){
+      document.querySelectorAll(".article-image").forEach(input=>{
+        const image=input.parentElement.querySelector(".image-preview");
+        image.src=input.value.trim()||"shiki-dx-phonebook-default-card.jpg";
+        image.onerror=()=>{
+          image.src="shiki-dx-phonebook-default-card.jpg";
+        };
+      });
+    }
+
+    function escapeHtml(value){
+      return String(value||"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    async function downloadShareImage(){
+      const source=new Image();
+
+      source.onload=()=>{
+        const canvas=document.createElement("canvas");
+        canvas.width=1200;
+        canvas.height=675;
+
+        const ctx=canvas.getContext("2d");
+        ctx.drawImage(source,0,0,1200,675);
+
+        const data=readArticle();
+
+        ctx.fillStyle="rgba(255,255,255,.82)";
+        ctx.fillRect(38,46,600,355);
+
+        ctx.fillStyle="#159b78";
+        ctx.font="900 28px sans-serif";
+        ctx.fillText(data.type||"お知らせ",62,110);
+
+        ctx.fillStyle="#092b63";
+        ctx.font="900 58px sans-serif";
+        ctx.fillText((data.title||"志木のDX電話帳").slice(0,18),62,190);
+
+        ctx.fillStyle="#42617c";
+        ctx.font="800 26px sans-serif";
+        ctx.fillText(formatDate(data.date)||formatDate(today()),62,340);
+
+        const link=document.createElement("a");
+        link.download="shiki-dx-article-share.png";
+        link.href=canvas.toDataURL("image/png");
+        link.click();
+      };
+
+      source.onerror=()=>{
+        showToast("シェア画像を作成できませんでした。");
+      };
+
+      source.src="shiki-dx-article-share-template.jpg";
+    }
+
+    function showToast(message){
+      const toast=$("toast");
+      toast.textContent=message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer=setTimeout(()=>{
+        toast.classList.remove("show");
+      },2200);
+    }
+
+    document.querySelectorAll("#article-form input,#article-form select,#article-form textarea")
+      .forEach(input=>{
+        input.addEventListener("input",()=>{
+          updateArticlePreview();
+          updateImagePreviews();
+          localStorage.setItem(ARTICLE_DRAFT_KEY,JSON.stringify(readArticle()));
+        });
+      });
+
+    $("share-download").addEventListener("click",downloadShareImage);
+
+    $("article-date").value=today();
+    $("start-date").value=today();
+
+    updateArticlePreview();
+    updateImagePreviews();
+
+    try{
+      const draft=JSON.parse(localStorage.getItem(ARTICLE_DRAFT_KEY)||"null");
+      if(draft)fillArticle(draft);
+    }catch(error){}
+  </script>
 </body>
 </html>
