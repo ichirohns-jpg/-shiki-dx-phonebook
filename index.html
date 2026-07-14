@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b3d91">
+  <meta name="description" content="志木市のお店、暮らし、地域活動などのDXを見つけて保存できる電話帳です。">
+  <title>志木のDX電話帳｜みんなで志木市を応援しよう</title>
+  <style>
+    :root{
+      --navy:#0b3d91;
+      --navy-dark:#082c6a;
+      --blue:#2f8fe8;
+      --sky:#eaf7ff;
+      --mint:#e9fbf4;
+      --green:#36a66b;
+      --orange:#f39a34;
+      --pink:#e85f87;
+      --purple:#8067c9;
+      --ink:#17324d;
+      --muted:#6e8193;
+      --line:#dce9f3;
+      --white:#ffffff;
+      --shadow:0 12px 28px rgba(20,75,120,.10);
+    }
+
+    *{box-sizing:border-box}
+
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#f8fcff 0%,#eef9ff 48%,#ffffff 100%);
+      color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+      line-height:1.65;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    button{cursor:pointer}
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:10;
+      background:rgba(255,255,255,.94);
+      border-bottom:1px solid rgba(220,233,243,.85);
+      backdrop-filter:blur(12px);
+    }
+
+    .topbar-inner{
+      width:min(1120px,calc(100% - 28px));
+      min-height:68px;
+      margin:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+
+    .brand img{
+      width:42px;
+      height:42px;
+      border-radius:13px;
+      object-fit:cover;
+      box-shadow:0 5px 14px rgba(11,61,145,.18);
+      flex:0 0 auto;
+    }
+
+    .brand-title{
+      color:var(--navy);
+      font-size:clamp(15px,2.8vw,21px);
+      font-weight:800;
+      letter-spacing:.02em;
+      white-space:nowrap;
+    }
+
+    .brand-subtitle{
+      color:var(--muted);
+      font-size:11px;
+      white-space:nowrap;
+    }
+
+    .top-actions{display:flex;gap:8px;align-items:center}
+
+    .top-link{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--navy);
+      border-radius:999px;
+      padding:7px 12px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .hero-wrap{
+      width:min(1120px,calc(100% - 28px));
+      margin:22px auto 0;
+    }
+
+    .hero{
+      overflow:hidden;
+      border-radius:24px;
+      background:#fff;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(220,233,243,.9);
+    }
+
+    .hero img{
+      display:block;
+      width:100%;
+      aspect-ratio:16 / 9;
+      object-fit:cover;
+    }
+
+    .hero-caption{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:12px 16px 14px;
+      background:#fff;
+    }
+
+    .hero-caption strong{font-size:14px;color:var(--navy)}
+    .hero-caption span{font-size:12px;color:var(--muted)}
+
+    .page{
+      width:min(1120px,calc(100% - 28px));
+      margin:0 auto;
+      padding:22px 0 60px;
+    }
+
+    .section{margin-top:28px}
+
+    .section-heading{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .section-heading h2{
+      margin:0;
+      color:var(--navy);
+      font-size:clamp(20px,4vw,28px);
+      line-height:1.25;
+      letter-spacing:.02em;
+    }
+
+    .section-heading p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .notice-card{
+      display:grid;
+      grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);
+      gap:0;
+      overflow:hidden;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+    }
+
+    .notice-visual{
+      min-height:250px;
+      background:#eaf7ff;
+    }
+
+    .notice-visual img{
+      width:100%;
+      height:100%;
+      min-height:250px;
+      display:block;
+      object-fit:cover;
+    }
+
+    .notice-content{padding:22px 22px 20px}
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:var(--blue);
+      font-weight:800;
+      font-size:12px;
+      margin-bottom:6px;
+    }
+
+    .eyebrow::before{
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--green);
+    }
+
+    .notice-content h3{
+      margin:0 0 8px;
+      color:var(--navy-dark);
+      font-size:clamp(20px,3.5vw,27px);
+      line-height:1.35;
+    }
+
+    .notice-content p{margin:0;color:#4f667b;font-size:14px}
+
+    .notice-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:17px;
+    }
+
+    .button{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:40px;
+      padding:8px 14px;
+      border:0;
+      border-radius:12px;
+      font-weight:800;
+      font-size:13px;
+      transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease;
+    }
+
+    .button:hover{transform:translateY(-1px)}
+    .button-primary{background:var(--navy);color:#fff;box-shadow:0 7px 15px rgba(11,61,145,.18)}
+    .button-secondary{background:var(--sky);color:var(--navy)}
+    .button-outline{background:#fff;color:var(--navy);border:1px solid var(--line)}
+    .button-disabled{background:#edf2f5;color:#9aa9b4;cursor:default}
+
+    .search-box{
+      position:relative;
+      margin-bottom:12px;
+    }
+
+    .search-box input{
+      width:100%;
+      height:52px;
+      padding:0 18px 0 48px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      outline:none;
+      background:#fff;
+      color:var(--ink);
+      box-shadow:0 7px 18px rgba(20,75,120,.06);
+    }
+
+    .search-box input:focus{border-color:#85c7f2;box-shadow:0 0 0 4px rgba(47,143,232,.11)}
+
+    .search-icon{
+      position:absolute;
+      left:17px;
+      top:13px;
+      color:var(--blue);
+      font-size:21px;
+    }
+
+    .categories{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding:2px 1px 8px;
+      scrollbar-width:none;
+    }
+
+    .categories::-webkit-scrollbar{display:none}
+
+    .category-button{
+      flex:0 0 auto;
+      border:1px solid var(--line);
+      background:#fff;
+      color:#557087;
+      border-radius:999px;
+      padding:9px 13px;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .category-button.active{
+      border-color:var(--navy);
+      background:var(--navy);
+      color:#fff;
+    }
+
+    .dx-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .dx-card{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      box-shadow:0 8px 20px rgba(20,75,120,.07);
+    }
+
+    .dx-card-image{position:relative;background:#eaf7ff}
+
+    .dx-card-image img{
+      display:block;
+      width:100%;
+      aspect-ratio:1.42 / 1;
+      object-fit:cover;
+    }
+
+    .category-label{
+      position:absolute;
+      top:10px;
+      left:10px;
+      padding:4px 9px;
+      border-radius:999px;
+      color:#fff;
+      background:rgba(11,61,145,.88);
+      font-size:11px;
+      font-weight:800;
+    }
+
+    .dx-card-body{display:flex;flex:1;flex-direction:column;padding:15px}
+    .dx-card h3{margin:0 0 6px;color:var(--navy-dark);font-size:17px;line-height:1.35}
+    .dx-card p{margin:0;color:#647b8f;font-size:13px;line-height:1.6}
+
+    .dx-card-footer{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      margin-top:auto;
+      padding-top:14px;
+    }
+
+    .dx-card-footer .button{flex:1;min-height:38px;padding:7px 8px;font-size:12px}
+
+    .save-button{
+      width:40px;
+      min-width:40px!important;
+      padding:0!important;
+      font-size:19px!important;
+    }
+
+    .save-button.saved{background:#fff2bd;color:#b67b00}
+
+    .empty-state{
+      display:none;
+      padding:28px 16px;
+      border:1px dashed #bcd4e4;
+      border-radius:16px;
+      text-align:center;
+      color:var(--muted);
+      background:rgba(255,255,255,.65);
+    }
+
+    .my-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      min-height:46px;
+      padding:13px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+    }
+
+    .my-list.empty{display:block;color:var(--muted);font-size:13px}
+
+    .saved-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 11px;
+      border-radius:999px;
+      background:var(--mint);
+      color:#23724a;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .saved-chip button{
+      border:0;
+      padding:0;
+      color:#5a8c72;
+      background:transparent;
+      font-size:15px;
+      line-height:1;
+    }
+
+    .footer{
+      width:min(1120px,calc(100% - 28px));
+      margin:0 auto;
+      padding:20px 0 32px;
+      color:var(--muted);
+      font-size:11px;
+      text-align:center;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      z-index:20;
+      transform:translate(-50%,20px);
+      opacity:0;
+      pointer-events:none;
+      padding:11px 15px;
+      border-radius:999px;
+      color:#fff;
+      background:rgba(11,61,145,.94);
+      box-shadow:0 9px 24px rgba(11,61,145,.25);
+      font-size:13px;
+      transition:opacity .2s ease,transform .2s ease;
+    }
+
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+
+    @media (max-width:820px){
+      .dx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .notice-card{grid-template-columns:1fr}
+      .notice-visual{min-height:210px}
+      .notice-visual img{min-height:210px;aspect-ratio:16/8;object-fit:cover}
+    }
+
+    @media (max-width:560px){
+      .topbar-inner{min-height:62px}
+      .brand-subtitle,.top-link{display:none}
+      .hero-wrap{margin-top:14px}
+      .hero,.notice-card{border-radius:18px}
+      .hero-caption{align-items:flex-start;flex-direction:column;gap:2px}
+      .page{padding-top:14px}
+      .section{margin-top:24px}
+      .dx-grid{grid-template-columns:1fr;gap:12px}
+      .dx-card{display:grid;grid-template-columns:132px minmax(0,1fr)}
+      .dx-card-image img{height:100%;min-height:142px;aspect-ratio:auto}
+      .category-label{top:8px;left:8px;font-size:10px}
+      .dx-card-body{padding:13px}
+      .dx-card h3{font-size:16px}
+      .dx-card p{font-size:12px}
+      .dx-card-footer{padding-top:10px}
+      .dx-card-footer .button{min-height:34px}
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./index.html" aria-label="志木のDX電話帳トップ">
+        <img src="shiki-dx-phonebook-icon.jpg" alt="志木のDX電話帳アイコン">
+
+        <div>
+          <div class="brand-title">志木のDX電話帳</div>
+          <div class="brand-subtitle">みんなで志木市を応援しよう</div>
+        </div>
+      </a>
+
+      <nav class="top-actions" aria-label="ページ内メニュー">
+        <a class="top-link" href="#my-dx">マイDX</a>
+        <a class="top-link" href="#dx-list">一覧を見る</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="hero-wrap">
+    <div class="hero">
+      <img src="shiki-dx-phonebook-banner.jpg" alt="志木のDX電話帳。みんなで志木市を応援しよう。">
+
+      <div class="hero-caption">
+        <strong>お店も、暮らしも、地域の活動も。</strong>
+        <span>志木の情報を見つけて、保存する電話帳</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+    <section class="section" aria-labelledby="notice-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="notice-title">特別なお知らせ</h2>
+          <p>大切な情報や新しいDXをお知らせします</p>
+        </div>
+      </div>
+
+      <article class="notice-card" id="notice-card">
+        <div class="notice-visual">
+          <img id="notice-image" src="shiki-dx-article-share-template.jpg" alt="志木の地域情報を届けるイメージ">
+        </div>
+
+        <div class="notice-content">
+          <div class="eyebrow" id="notice-type">お知らせ</div>
+          <h3 id="notice-heading">志木のDX電話帳を始めます</h3>
+          <p id="notice-body">志木市のお店、暮らし、地域活動など、役立つDXを見つけやすく整理していきます。</p>
+
+          <div class="notice-actions" id="notice-actions">
+            <button class="button button-disabled" type="button" disabled>申し込み</button>
+            <button class="button button-secondary" type="button" onclick="shareArticle()">記事をシェア</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="dx-list" aria-labelledby="dx-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="dx-title">DXを探す</h2>
+          <p id="result-count">登録されたDXを表示しています</p>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input id="search-input" type="search" placeholder="DX名・地域・説明から検索" autocomplete="off">
+      </div>
+
+      <div class="categories" id="categories" aria-label="カテゴリー"></div>
+
+      <div class="dx-grid" id="dx-grid"></div>
+      <div class="empty-state" id="empty-state">条件に合うDXが見つかりませんでした。</div>
+    </section>
+
+    <section class="section" id="my-dx" aria-labelledby="my-dx-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="my-dx-title">マイDX電話帳</h2>
+          <p>気になったDXを自分の電話帳に保存できます</p>
+        </div>
+      </div>
+
+      <div class="my-list empty" id="my-list">
+        まだ保存したDXはありません。カードの☆ボタンから保存できます。
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    志木のDX電話帳｜みんなで志木市を応援しよう
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const DX_IMAGE = "shiki-dx-phonebook-default-card.jpg";
+    const STORAGE_KEY = "shikiDxPhonebookSaved";
+
+    const GAS_URL =
+      "https://script.google.com/macros/s/AKfycbzwK-O5QGVloX0h4dqV6bmMCsDeXT116Je8PS4ZVIMRLI2XSE6bc0Fm_5XWFrJZwdXl/exec";
+
+    let articleItems = [];
+
+    let dxItems = [
+      {
+        id: "shiki-go-map",
+        name: "志木キッチンカー Go map",
+        category: "お店・飲食",
+        area: "志木市",
+        description: "志木市内のキッチンカー情報を見つけられるDXです。",
+        url: "https://ichirohns-jpg.github.io/shiki.gomap-001/"
+      },
+      {
+        id: "nsaw-anshin",
+        name: "NSAW暮らし情報局",
+        category: "暮らし",
+        area: "志木・新座・朝霞・和光",
+        description: "暮らし、見守り、服薬、予定などの情報をまとめるDXです。",
+        url: "https://ichirohns-jpg.github.io/nsaw-anshin-dx-1/"
+      },
+      {
+        id: "tagoyama-fuji-168",
+        name: "田子山富士168の縁プロジェクト",
+        category: "地域活動",
+        area: "志木市",
+        description: "田子山富士の登頂記録と地域のご縁をつなぐDXです。",
+        url: "https://ichirohns-jpg.github.io/tagoyama-fuji-168/"
+      },
+      {
+        id: "shiki-dx-coming",
+        name: "新しい志木のDX",
+        category: "地域活動",
+        area: "志木市",
+        description: "これから登録される新しいDXのためのカードです。",
+        url: "#"
+      },
+      {
+        id: "life-support-coming",
+        name: "暮らしを支えるDX",
+        category: "福祉",
+        area: "志木市",
+        description: "福祉や高齢者の暮らしに役立つDXを登録できます。",
+        url: "#"
+      },
+      {
+        id: "community-coming",
+        name: "地域活動のDX",
+        category: "イベント",
+        area: "志木市",
+        description: "イベントや地域の活動情報をまとめていきます。",
+        url: "#"
+      }
+    ];
+
+    const categories = [
+      "すべて",
+      "お店・飲食",
+      "暮らし",
+      "防災",
+      "福祉",
+      "子育て",
+      "地域活動",
+      "イベント",
+      "観光",
+      "まちづくり"
+    ];
+
+    let selectedCategory = "すべて";
+    let searchWord = "";
+    let currentArticle = null;
+
+    function loadGasData(){
+      loadJsonp("dx", result => {
+        if(
+          result &&
+          result.ok &&
+          Array.isArray(result.data) &&
+          result.data.length
+        ){
+          const loadedItems = result.data
+            .filter(row => {
+              const status =
+                String(row["公開状態"] || "公開中").trim();
+
+              return status !== "非公開";
+            })
+            .map(row => ({
+              id:
+                row["DX_ID"] ||
+                `dx-${Math.random().toString(36).slice(2,8)}`,
+
+              name:
+                row["DX名"] ||
+                "名称未設定のDX",
+
+              category:
+                row["分類"] ||
+                "その他",
+
+              area:
+                row["地域"] ||
+                "志木市",
+
+              description:
+                row["短い説明"] ||
+                "",
+
+              url:
+                row["公開URL"] ||
+                "#",
+
+              image:
+                row["アイコンURL"] ||
+                DX_IMAGE,
+
+              banner:
+                row["バナーURL"] ||
+                "",
+
+              status:
+                row["公開状態"] ||
+                "公開中"
+            }));
+
+          if(loadedItems.length){
+            dxItems = loadedItems;
+            renderCategories();
+            renderCards();
+            renderMyList();
+          }
+        }
+      });
+
+      loadJsonp("articles", result => {
+        if(
+          result &&
+          result.ok &&
+          Array.isArray(result.data) &&
+          result.data.length
+        ){
+          articleItems = result.data;
+          renderNotice(articleItems[0]);
+        }
+      });
+    }
+
+    function loadJsonp(mode,onSuccess){
+      if(!GAS_URL){
+        return;
+      }
+
+      const callbackName =
+        `shikiDxCallback${Date.now()}${Math.floor(Math.random() * 1000)}`;
+
+      const script =
+        document.createElement("script");
+
+      const separator =
+        GAS_URL.includes("?") ? "&" : "?";
+
+      window[callbackName] = result => {
+        try{
+          onSuccess(result);
+        }finally{
+          delete window[callbackName];
+          script.remove();
+        }
+      };
+
+      script.onerror = () => {
+        delete window[callbackName];
+        script.remove();
+      };
+
+      script.src =
+        `${GAS_URL}${separator}mode=${encodeURIComponent(mode)}&callback=${callbackName}&_=${Date.now()}`;
+
+      document.head.appendChild(script);
+    }
+
+    function renderNotice(article){
+      if(!article){
+        return;
+      }
+
+      currentArticle = article;
+
+      const type =
+        article["種別"] ||
+        "お知らせ";
+
+      const title =
+        article["テーマ"] ||
+        "志木のDX電話帳";
+
+      const body =
+        article["詳細内容"] ||
+        "";
+
+      const date =
+        article["日付"] ||
+        "";
+
+      const image =
+        article["画像1"] ||
+        "shiki-dx-article-share-template.jpg";
+
+      document.getElementById("notice-type").textContent =
+        date ? `${type}｜${date}` : type;
+
+      document.getElementById("notice-heading").textContent =
+        title;
+
+      document.getElementById("notice-body").textContent =
+        body;
+
+      const noticeImage =
+        document.getElementById("notice-image");
+
+      noticeImage.src = image;
+      noticeImage.alt = `${title}の画像`;
+
+      noticeImage.onerror = () => {
+        noticeImage.src =
+          "shiki-dx-article-share-template.jpg";
+      };
+
+      const actions = [];
+
+      if(article["申込URL"]){
+        actions.push(`
+          <a class="button button-primary"
+             href="${safeUrl(article["申込URL"])}"
+             target="_blank"
+             rel="noopener">
+             ${escapeHtml(article["申込ボタン名"] || "申し込む")}
+          </a>
+        `);
+      }
+
+      if(article["詳細リンクURL"]){
+        actions.push(`
+          <a class="button button-secondary"
+             href="${safeUrl(article["詳細リンクURL"])}"
+             target="_blank"
+             rel="noopener">
+             ${escapeHtml(article["詳細ボタン名"] || "詳しく見る")}
+          </a>
+        `);
+      }
+
+      if(article["YouTube URL"]){
+        actions.push(`
+          <a class="button button-secondary"
+             href="${safeUrl(article["YouTube URL"])}"
+             target="_blank"
+             rel="noopener">
+             YouTubeを見る
+          </a>
+        `);
+      }
+
+      actions.push(`
+        <button class="button button-secondary"
+                type="button"
+                onclick="shareArticle()">
+          記事をシェア
+        </button>
+      `);
+
+      document.getElementById("notice-actions").innerHTML =
+        actions.join("");
+    }
+
+    function getSavedIds(){
+      try{
+        return JSON.parse(
+          localStorage.getItem(STORAGE_KEY) || "[]"
+        );
+      }catch(error){
+        return [];
+      }
+    }
+
+    function saveIds(ids){
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(ids)
+      );
+    }
+
+    function showToast(message){
+      const toast =
+        document.getElementById("toast");
+
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(showToast.timer);
+
+      showToast.timer =
+        setTimeout(() => {
+          toast.classList.remove("show");
+        },2200);
+    }
+
+    function renderCategories(){
+      const wrap =
+        document.getElementById("categories");
+
+      wrap.innerHTML =
+        categories.map(category => `
+          <button
+            class="category-button ${selectedCategory === category ? "active" : ""}"
+            type="button"
+            onclick="selectCategory(${JSON.stringify(category)})">
+            ${category}
+          </button>
+        `).join("");
+    }
+
+    function filteredItems(){
+      return dxItems.filter(item => {
+        const categoryMatch =
+          selectedCategory === "すべて" ||
+          item.category === selectedCategory;
+
+        const text =
+          `${item.name} ${item.category} ${item.area} ${item.description}`
+            .toLowerCase();
+
+        const searchMatch =
+          !searchWord ||
+          text.includes(searchWord.toLowerCase());
+
+        return categoryMatch && searchMatch;
+      });
+    }
+
+    function renderCards(){
+      const grid =
+        document.getElementById("dx-grid");
+
+      const empty =
+        document.getElementById("empty-state");
+
+      const items =
+        filteredItems();
+
+      const saved =
+        getSavedIds();
+
+      grid.innerHTML =
+        items.map(item => {
+          const isSaved =
+            saved.includes(item.id);
+
+          const isReady =
+            item.url &&
+            item.url !== "#" &&
+            item.status !== "制作中";
+
+          return `
+            <article class="dx-card">
+              <div class="dx-card-image">
+                <img
+                  src="${safeUrl(item.image || DX_IMAGE)}"
+                  alt="${escapeHtml(item.name)}の画像"
+                  onerror="this.src='${DX_IMAGE}'">
+
+                <span class="category-label">
+                  ${escapeHtml(item.category)}
+                </span>
+              </div>
+
+              <div class="dx-card-body">
+                <h3>${escapeHtml(item.name)}</h3>
+
+                <p>
+                  ${escapeHtml(item.area)}<br>
+                  ${escapeHtml(item.description)}
+                </p>
+
+                <div class="dx-card-footer">
+                  ${
+                    isReady
+                      ? `
+                        <a
+                          class="button button-primary"
+                          href="${safeUrl(item.url)}"
+                          target="_blank"
+                          rel="noopener">
+                          見る
+                        </a>
+                      `
+                      : `
+                        <button
+                          class="button button-disabled"
+                          type="button"
+                          disabled>
+                          準備中
+                        </button>
+                      `
+                  }
+
+                  <button
+                    class="button button-secondary save-button ${isSaved ? "saved" : ""}"
+                    type="button"
+                    aria-label="${isSaved ? "マイDXから削除" : "マイDXに保存"}"
+                    onclick="toggleSave(${JSON.stringify(item.id)})">
+                    ${isSaved ? "★" : "☆"}
+                  </button>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+      empty.style.display =
+        items.length ? "none" : "block";
+
+      document.getElementById("result-count").textContent =
+        `${items.length}件のDXを表示しています`;
+    }
+
+    function renderMyList(){
+      const wrap =
+        document.getElementById("my-list");
+
+      const saved =
+        getSavedIds();
+
+      const items =
+        saved
+          .map(id => dxItems.find(item => item.id === id))
+          .filter(Boolean);
+
+      if(!items.length){
+        wrap.className = "my-list empty";
+
+        wrap.textContent =
+          "まだ保存したDXはありません。カードの☆ボタンから保存できます。";
+
+        return;
+      }
+
+      wrap.className = "my-list";
+
+      wrap.innerHTML =
+        items.map(item => `
+          <span class="saved-chip">
+            ${escapeHtml(item.name)}
+
+            <button
+              type="button"
+              aria-label="${escapeHtml(item.name)}を削除"
+              onclick="toggleSave(${JSON.stringify(item.id)})">
+              ×
+            </button>
+          </span>
+        `).join("");
+    }
+
+    function toggleSave(id){
+      const saved =
+        getSavedIds();
+
+      const index =
+        saved.indexOf(id);
+
+      const item =
+        dxItems.find(entry => entry.id === id);
+
+      if(index >= 0){
+        saved.splice(index,1);
+        showToast("マイDXから削除しました");
+      }else{
+        saved.push(id);
+        showToast("マイDXに保存しました");
+      }
+
+      saveIds(saved);
+      renderCards();
+      renderMyList();
+    }
+
+    function selectCategory(category){
+      selectedCategory = category;
+      renderCategories();
+      renderCards();
+    }
+
+    async function shareArticle(){
+      const article =
+        currentArticle;
+
+      const title =
+        article && article["テーマ"]
+          ? article["テーマ"]
+          : "志木のDX電話帳";
+
+      const body =
+        article && article["詳細内容"]
+          ? article["詳細内容"]
+          : "みんなで志木市を応援しよう。";
+
+      const shareData = {
+        title:title,
+        text:body,
+        url:location.href
+      };
+
+      try{
+        if(navigator.share){
+          await navigator.share(shareData);
+          return;
+        }
+
+        await navigator.clipboard.writeText(
+          `${shareData.text}\n${shareData.url}`
+        );
+
+        showToast("共有文をコピーしました");
+      }catch(error){
+        if(
+          error &&
+          error.name !== "AbortError"
+        ){
+          showToast("共有できませんでした");
+        }
+      }
+    }
+
+    function escapeHtml(value){
+      return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function safeUrl(value){
+      const url =
+        String(value || "").trim();
+
+      if(/^https?:\/\//i.test(url)){
+        return escapeHtml(url);
+      }
+
+      if(/^mailto:/i.test(url)){
+        return escapeHtml(url);
+      }
+
+      return "#";
+    }
+
+    document
+      .getElementById("search-input")
+      .addEventListener("input",event => {
+        searchWord =
+          event.target.value.trim();
+
+        renderCards();
+      });
+
+    renderCategories();
+    renderCards();
+    renderMyList();
+    loadGasData();
+  </script>
+</body>
+</html>
